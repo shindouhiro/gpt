@@ -1,0 +1,46 @@
+{
+  "name": "gpt",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "images": "node tools/chatgpt-images/cli.mjs",
+    "images:login": "pnpm images --manual-login",
+    "images:install": "playwright install chromium",
+    "test:images": "pnpm test:desktop",
+    "lint:images": "eslint tools/chatgpt-images eslint.config.mjs",
+    "images:check-login": "pnpm images --login",
+    "desktop:prepare": "node tools/desktop/prepare.mjs",
+    "desktop:dev": "pnpm desktop:prepare && node tools/desktop/launch.mjs dev",
+    "desktop:build": "pnpm desktop:prepare && node tools/desktop/launch.mjs build",
+    "test:desktop": "node --test tools/desktop/*.test.mjs",
+    "lint": "eslint src tools/desktop tools/chatgpt-images eslint.config.mjs"
+  },
+  "dependencies": {
+    "@fontsource/inter": "catalog:",
+    "@tauri-apps/api": "catalog:",
+    "@tauri-apps/plugin-dialog": "catalog:",
+    "radix-vue": "catalog:",
+    "vue": "catalog:"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "@tauri-apps/cli": "catalog:",
+    "@types/node": "catalog:",
+    "@vitejs/plugin-vue": "catalog:",
+    "@vue/tsconfig": "catalog:",
+    "eslint": "catalog:",
+    "playwright": "catalog:",
+    "proper-lockfile": "catalog:",
+    "sharp": "catalog:",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vue-tsc": "catalog:"
+  },
+  "packageManager": "pnpm@10.33.0"
+}

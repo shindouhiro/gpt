@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Image Workshop",
+  "version": "0.1.0",
+  "identifier": "com.hikaru.imageworkshop",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build",
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../web-dist"
+  },
+  "app": {
+    "windows": [{ "label": "main", "title": "Image Workshop · 图片工作台", "width": 1100, "height": 820, "minWidth": 720, "minHeight": 600 }],
+    "security": { "csp": "default-src 'self'; connect-src ipc: http://ipc.localhost; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'" }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "resources": { "runtime/": "runtime/" },
+    "macOS": { "minimumSystemVersion": "11.0" },
+    "windows": { "nsis": { "languages": ["SimpChinese", "English"], "displayLanguageSelector": true } },
+    "icon": ["icons/icon.png", "icons/icon.icns", "icons/icon.ico"]
+  }
+}

@@ -1,0 +1,23 @@
+packages:
+  - tools/*
+catalog:
+  '@antfu/eslint-config': ^9.5.1
+  '@fontsource/inter': ^5.3.0
+  '@tailwindcss/vite': ^4.3.3
+  '@tauri-apps/api': ^2.11.1
+  '@tauri-apps/cli': ^2.11.4
+  '@tauri-apps/plugin-dialog': ^2.7.3
+  '@types/node': '^24.13.3'
+  '@vitejs/plugin-vue': '^6.0.8'
+  '@vue/tsconfig': '^0.9.1'
+  eslint: ^10.10.0
+  playwright: ^1.63.0
+  proper-lockfile: ^4.1.2
+  radix-vue: ^1.9.17
+  sharp: ^0.35.4
+  tailwindcss: ^4.3.3
+  'typescript': '~6.0.2'
+  'vite': '^8.2.2'
+  'vue': '^3.5.41'
+  'vue-tsc': '^3.3.11'
+catalogMode: prefer
