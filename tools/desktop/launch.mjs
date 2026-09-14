@@ -9,7 +9,9 @@ import { fileURLToPath } from 'node:url'
 const rustBin = path.join(os.homedir(), '.cargo', 'bin')
 const hasRustup = await access(path.join(rustBin, process.platform === 'win32' ? 'rustc.exe' : 'rustc')).then(() => true, () => false)
 const env = { ...process.env }
-if (hasRustup) env.PATH = `${rustBin}${path.delimiter}${env.PATH || ''}`
+// Windows 环境变量名称不区分大小写，避免同时传入 Path 和 PATH 丢失原路径。
+const pathKey = Object.keys(env).find(key => key.toUpperCase() === 'PATH') || 'PATH'
+if (hasRustup) env[pathKey] = `${rustBin}${path.delimiter}${env[pathKey] || ''}`
 const cli = fileURLToPath(new URL('../../node_modules/@tauri-apps/cli/tauri.js', import.meta.url))
 const child = spawn(process.execPath, [cli, ...process.argv.slice(2)], { stdio: 'inherit', env })
 child.on('error', (error) => { console.error(error.message); process.exitCode = 1 })
