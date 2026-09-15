@@ -44,3 +44,18 @@ test('桌面界面：多图、自定义提示词、事件完成、停止及偏�
   }
   finally { await browser.close() }
 })
+
+test('桌面界面：默认目录初始化失败时登录按钮仍可用', { skip: !process.env.GPT_UI_TEST, timeout: 30000 }, async () => {
+  const browser = await chromium.launch({ headless: true })
+  try {
+    const page = await browser.newPage({ viewport: { width: 900, height: 700 } })
+    const mocks = (await readFile(new URL('../../node_modules/@tauri-apps/api/mocks.js', import.meta.url), 'utf8')).replace(/^export .*$/m, '')
+    await page.addInitScript(`${mocks}\nwindow.isTauri=true; window.__TAURI_INTERNALS__ = {}; window.__requests=[]; mockIPC((cmd,args)=> { if(cmd==='defaults') throw new Error('no known folder'); if(cmd==='start_task') window.__requests.push(args.request); }, {shouldMockEvents:true});`)
+    await page.goto('http://localhost:1420')
+    await page.locator('#login-account').click()
+    const request = await page.evaluate(() => window.__requests[0])
+    assert.equal(request.mode, 'login')
+    assert.equal(await page.locator('#login-account').isDisabled(), true)
+  }
+  finally { await browser.close() }
+})

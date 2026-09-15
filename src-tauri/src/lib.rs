@@ -30,7 +30,7 @@ fn defaults(app: tauri::AppHandle) -> Result<String, String> {
         .path()
         .picture_dir()
         .or_else(|_| app.path().document_dir())
-        .map_err(|e| e.to_string())?
+        .unwrap_or(data_dir(&app)?)
         .join("Image Workshop");
     data_dir(&app)?;
     Ok(dir.to_string_lossy().into_owned())
@@ -47,11 +47,16 @@ fn start_task(app: tauri::AppHandle, state: State<Tasks>, request: Request) -> R
     if request.mode == "process" && request.inputs.is_empty() {
         return Err("请先选择图片".into());
     }
-    if !PathBuf::from(&request.output).is_absolute() {
+    let data = data_dir(&app)?;
+    if ["process", "retry"].contains(&request.mode.as_str())
+        && !PathBuf::from(&request.output).is_absolute()
+    {
         return Err("输出目录必须是绝对路径".into());
     }
-    let data = data_dir(&app)?;
     let mut value = serde_json::to_value(request).map_err(|e| e.to_string())?;
+    if !PathBuf::from(value["output"].as_str().unwrap_or_default()).is_absolute() {
+        value["output"] = serde_json::json!(data.join("Image Workshop"));
+    }
     value["profile"] = serde_json::json!(data.join("chrome-profile"));
     let file = data.join("request.json");
     std::fs::write(

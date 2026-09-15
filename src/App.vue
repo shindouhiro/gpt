@@ -62,7 +62,7 @@ const { inputs, jobs, output, useDefault, prompt, requireAlpha, busy, ready, sto
       </div>
     </div>
     <footer class="text-xs text-stone-400 mt-7 flex justify-between">
-      <span>使用你的 ChatGPT 账号 · 需要已安装 Chrome</span><span>Image Workshop / 0.1</span>
+      <span>使用你的 ChatGPT 账号 · 需要已安装 Chrome</span><span>Image Workshop / 0.1.1</span>
     </footer>
   </main>
 </template>

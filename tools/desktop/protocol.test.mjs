@@ -22,3 +22,7 @@ test('补下载不附加输入或默认提示词，不改变原任务配置', ()
   assert.ok(!args.includes('--default-prompt'))
   assert.ok(!args.includes('--input-list'))
 })
+test('登录和检查不依赖输出目录初始化', () => {
+  assert.ok(cliArgs({ ...base, mode: 'login', output: '' }, '请求.json').includes('--manual-login'))
+  assert.ok(cliArgs({ ...base, mode: 'check', output: '' }, '请求.json').includes('--login'))
+})

@@ -34,7 +34,6 @@ export function useWorkshop() {
     }
     catch { log('已重置无效的偏好设置') }
     if (!isTauri()) { status.value = '浏览器预览 · 请使用桌面应用选择文件和启动任务'; return }
-    output.value = await invoke<string>('defaults')
     unlisten.push(await listen<string>('task-log', e => log(e.payload)))
     unlisten.push(await listen<{ desktopEvent: string, files?: string[], message?: string } & Job>('task-event', ({ payload: e }) => {
       if (e.desktopEvent === 'login') status.value = e.message || '请在普通 Chrome 中完成登录'
@@ -46,6 +45,13 @@ export function useWorkshop() {
       stopping.value = false
       status.value = code === 0 ? '任务完成' : code === 130 ? '已停止，进度已保留' : '任务未全部完成，请查看日志'
     }))
+    try {
+      output.value = await invoke<string>('defaults')
+    }
+    catch (e) {
+      status.value = `默认输出目录初始化失败：${String(e)}`
+      log(status.value)
+    }
     ready.value = true
   }))
   onUnmounted(() => unlisten.forEach(fn => fn()))
