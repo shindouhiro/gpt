@@ -2,7 +2,7 @@ import { execFile } from 'node:child_process'
 import process from 'node:process'
 import { setTimeout } from 'node:timers/promises'
 import { promisify } from 'node:util'
-import { runPowerShell } from './windows.mjs'
+import { runPowerShell, WINDOWS_PROCESS_TIMEOUT } from './windows.mjs'
 
 const run = promisify(execFile)
 
@@ -12,7 +12,7 @@ export function usesProfile(command, profile) {
 }
 export async function profileProcesses(profile) {
   if (process.platform === 'win32') {
-    const { stdout } = await runPowerShell(`$items = @(Get-CimInstance Win32_Process -Filter "Name = 'chrome.exe'" | Select-Object ProcessId, CommandLine); ConvertTo-Json -InputObject $items -Compress`, { timeout: 15000 })
+    const { stdout } = await runPowerShell(`$items = @(Get-CimInstance Win32_Process -Filter "Name = 'chrome.exe'" | Select-Object ProcessId, CommandLine); ConvertTo-Json -InputObject $items -Compress`, { timeout: WINDOWS_PROCESS_TIMEOUT })
     return JSON.parse(stdout || '[]').filter(p => usesProfile(p.CommandLine || '', profile)).map(p => p.ProcessId)
   }
   const { stdout } = await run('/bin/ps', ['-axo', 'pid=,command='])

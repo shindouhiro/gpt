@@ -4,7 +4,7 @@ import process from 'node:process'
 import { setTimeout } from 'node:timers/promises'
 import { promisify } from 'node:util'
 import { chromeLaunch } from './chrome-launch.mjs'
-import { findWindowsChrome, runPowerShell } from './windows.mjs'
+import { findWindowsChrome, runPowerShell, WINDOWS_PROCESS_TIMEOUT } from './windows.mjs'
 
 const run = promisify(execFile)
 
@@ -17,6 +17,8 @@ export async function manualLogin(profile, isStopped = () => false, onStatus = (
   // 专用目录与日常 Chrome 隔离；首次登录不启用远程调试和自动化标志。
   const launch = chromeLaunch(process.platform, chromePath, profile)
   const child = spawn(launch.executable, launch.args, { stdio: 'ignore' })
+  // 检查失败时允许 worker 退出并恢复界面，保留用户正在使用的登录窗口。
+  child.unref()
   let launchError
   child.on('exit', (code) => { if (code) launchError = new Error(`Chrome 窗口启动失败（退出码 ${code}）`) })
   child.on('error', () => { launchError = new Error('普通 Chrome 启动失败。') })
@@ -38,7 +40,7 @@ export async function manualLogin(profile, isStopped = () => false, onStatus = (
           $_.CommandLine.Contains($env:GPT_LOGIN_PROFILE) -and $_.CommandLine -notmatch '--type='
         })
         if ($chromeProcesses.Count -gt 0) { 'running' } else { 'closed' }
-      `, { env: { ...process.env, GPT_LOGIN_CHROME: chromePath, GPT_LOGIN_PROFILE: profile }, timeout: 15000 })
+      `, { env: { ...process.env, GPT_LOGIN_CHROME: chromePath, GPT_LOGIN_PROFILE: profile }, timeout: WINDOWS_PROCESS_TIMEOUT })
       running = stdout.trim() === 'running'
     }
     else {

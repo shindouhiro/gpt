@@ -6,6 +6,8 @@ import process from 'node:process'
 import { promisify } from 'node:util'
 
 const run = promisify(execFile)
+// Windows ARM 上首次加载 CIM 模块实测约 26 秒，不能使用原先的 15 秒限制。
+export const WINDOWS_PROCESS_TIMEOUT = 60000
 
 export function powershellArgs(script) {
   const source = `$ErrorActionPreference = 'Stop'\n[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)\n${script}`
