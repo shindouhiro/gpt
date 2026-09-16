@@ -43,6 +43,8 @@ jobs:
       - run: pnpm exec playwright install chromium
       - run: pnpm lint
       - run: pnpm test:desktop
+      - run: pnpm desktop:prepare
+      - run: cargo test --manifest-path src-tauri/Cargo.toml --lib
       - run: pnpm desktop:build --bundles ${{ matrix.bundle }}
       - uses: actions/upload-artifact@v4
         with:

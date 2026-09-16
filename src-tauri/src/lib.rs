@@ -6,6 +6,7 @@ use std::{
     time::Duration,
 };
 use tauri::{Emitter, Manager, State};
+mod runtime;
 
 #[derive(Default)]
 struct Tasks(Mutex<Option<Child>>);
@@ -72,11 +73,13 @@ fn start_task(app: tauri::AppHandle, state: State<Tasks>, request: Request) -> R
             .map_err(|e| e.to_string())?
             .join("runtime")
     };
-    let mut command = Command::new(runtime.join(if cfg!(windows) { "node.exe" } else { "node" }));
+    let mut command = runtime::node_command(
+        &runtime.join(if cfg!(windows) { "node.exe" } else { "node" }),
+        &runtime.join("tools/desktop/worker.mjs"),
+        &file,
+        &data,
+    );
     command
-        .arg(runtime.join("tools/desktop/worker.mjs"))
-        .arg(&file)
-        .current_dir(&data)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped());
